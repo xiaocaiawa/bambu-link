@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>进入 Bambu 看板</title>
+<style>
+ body{margin:0;background:#12161c;color:#e8edf2;font-family:system-ui,"Microsoft YaHei",sans-serif;
+      display:flex;align-items:center;justify-content:center;min-height:100vh}
+ .box{text-align:center;padding:24px;max-width:520px}
+ h1{font-size:20px;margin:0 0 10px;color:#3ea6ff}
+ p{color:#8b98a8;font-size:14px;line-height:1.7}
+ a.btn{display:inline-block;margin-top:16px;background:#2a3341;color:#e8edf2;text-decoration:none;
+       padding:14px 28px;border-radius:12px;font-size:17px}
+ code{font-size:12px;color:#c7d2dd;word-break:break-all}
+</style></head><body>
+<div class="box">
+  <h1>正在带你去打印机看板…</h1>
+  <p id="msg">读取当前地址中…</p>
+  <a class="btn" id="go" style="display:none">点这里进入</a>
+  <p style="margin-top:18px"><code id="url"></code></p>
+  <p style="margin-top:14px;font-size:12px">进不去 = 主人电脑关机了，或者看板/隧道没开。</p>
+</div>
+<script>
+(async function(){
+  try{
+    var r = await fetch('url.txt?t=' + Date.now(), {cache:'no-store'});
+    var u = (await r.text()).trim();
+    if (!/^https:\/\//.test(u)) throw new Error('bad url');
+    document.getElementById('url').textContent = u;
+    document.getElementById('go').href = u;
+    document.getElementById('go').style.display = 'inline-block';
+    document.getElementById('msg').textContent = '3 秒后自动过去，没反应就点下面的按钮';
+    setTimeout(function(){ location.replace(u); }, 3000);
+  }catch(e){
+    document.getElementById('msg').textContent = '暂时拿不到地址 —— 看板或隧道没开，等一会儿再刷新。';
+  }
+})();
+</script>
+</body></html>
